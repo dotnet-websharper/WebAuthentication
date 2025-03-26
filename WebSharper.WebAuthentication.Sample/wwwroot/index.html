@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>WebSharper.WebAuthentication.Sample</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="Content/WebSharper.WebAuthentication.Sample.css" />
+    <style>
+        /* Don't show the not-yet-loaded templates */
+        [ws-template], [ws-children-template] { display: none; }
+    </style>
+    <script type="module" src="Content/WebSharper.WebAuthentication.Sample.head.js"></script>
+</head>
+<body>
+    <div id="main" ws-children-template="Main">
+        <h1>🔐 WebAuthn Demo</h1>
+
+        <button id="registerBtn" ws-onclick="RegisterBtn">Register</button>
+        <button id="loginBtn" ws-onclick="LoginBtn">Login</button>
+    </div>
+    <script type="module" src="Content/WebSharper.WebAuthentication.Sample.min.js"></script>
+</body>
+</html>

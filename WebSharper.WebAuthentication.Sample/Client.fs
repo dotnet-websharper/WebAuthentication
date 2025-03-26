@@ -1,64 +1,4 @@
-# WebSharper Web Authentication API Binding
-
-This repository provides an F# [WebSharper](https://websharper.com/) binding for the [Web Authentication API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API), enabling strong, passwordless authentication with public-key credentials in WebSharper applications.
-
-## Repository Structure
-
-The repository consists of two main projects:
-
-1. **Binding Project**:
-
-   - Contains the F# WebSharper binding for the Web Authentication API.
-
-2. **Sample Project**:
-
-   - Demonstrates how to use the Web Authentication API with WebSharper syntax.
-
-   - Includes a GitHub Pages demo: [View Demo](https://dotnet-websharper.github.io/WebAuthentication/)
-
-## Installation
-
-To use this package in your WebSharper project, add the NuGet package:
-
-```bash
-   dotnet add package WebSharper.WebAuthentication
-```
-
-## Building
-
-### Prerequisites
-
-- [.NET SDK](https://dotnet.microsoft.com/download) installed on your machine.
-
-### Steps
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/dotnet-websharper/WebAuthentication.git
-   cd WebAuthentication
-   ```
-
-2. Build the Binding Project:
-
-   ```bash
-   dotnet build WebSharper.WebAuthentication/WebSharper.WebAuthentication.fsproj
-   ```
-
-3. Build and Run the Sample Project:
-
-   ```bash
-   cd WebSharper.WebAuthentication.Sample
-   dotnet build
-   dotnet run
-   ```
-
-## Example Usage
-
-The following example demonstrates how to register and authenticate a user using Web Authentication in a WebSharper project:
-
-```fsharp
-namespace WebSharper.WebAuthentication.Sample
+﻿namespace WebSharper.WebAuthentication.Sample
 
 open WebSharper
 open WebSharper.JavaScript
@@ -73,7 +13,7 @@ module Client =
     type IndexTemplate = Template<"wwwroot/index.html", ClientLoad.FromDocument>
 
     // Encode string to ArrayBuffer using TextEncoder
-    let strToBuf(str: string) =
+    let strToBuf(str: string) = 
         let textEncoder = JS.Eval("new TextEncoder()")
         textEncoder?encode(str) |> As<ArrayBuffer>
 
@@ -136,24 +76,17 @@ module Client =
     [<SPAEntryPoint>]
     let Main () =
         IndexTemplate.Main()
-            .RegisterBtn(fun _ ->
-                async {
-                    do! register () |> Promise.AsAsync
-                }
+            .RegisterBtn(fun _ -> 
+                async { 
+                    do! register () |> Promise.AsAsync 
+                } 
                 |> Async.StartImmediate
             )
-            .LoginBtn(fun _ ->
-                async {
-                    do! login () |> Promise.AsAsync
-                }
+            .LoginBtn(fun _ -> 
+                async { 
+                    do! login () |> Promise.AsAsync 
+                } 
                 |> Async.StartImmediate
             )
             .Doc()
         |> Doc.RunById "main"
-```
-
-## Notes
-
-- Web Authentication (WebAuthn) is a powerful standard that supports passwordless authentication.
-- Requires HTTPS context in production environments.
-- Compatible with modern browsers that support `navigator.credentials.create()` and `navigator.credentials.get()` APIs.

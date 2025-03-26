@@ -3,11 +3,11 @@
 open WebSharper
 open WebSharper.JavaScript
 open WebSharper.InterfaceGenerator
-open WebSharper.CredentialManagement
+//open WebSharper.CredentialManagement
 
 module Definition =
 
-    let BinaryData = T<ArrayBuffer> + T<DataView>
+    let BinaryData = T<ArrayBuffer> + T<DataView> + T<string>
 
     module Enum = 
         let Attestation = 
@@ -47,8 +47,8 @@ module Definition =
                 "usb"
             ]
 
-        let Type = 
-            Pattern.EnumStrings "Type" [
+        let CredentialType = 
+            Pattern.EnumStrings "CredentialType" [
                 "public-key"
             ]
 
@@ -73,18 +73,7 @@ module Definition =
         Pattern.Config "ExcludeCredentialsObject" {
             Required = [
                 "id", BinaryData
-                "type", Enum.Type.Type
-            ]
-            Optional = [
-                "transports", !| Enum.Transports
-            ]
-        }
-
-    let ExcludeCredentialsObjectBase64 = 
-        Pattern.Config "ExcludeCredentialsObjectBase64" {
-            Required = [
-                "id", T<string>
-                "type", Enum.Type.Type
+                "type", Enum.CredentialType.Type
             ]
             Optional = [
                 "transports", !| Enum.Transports
@@ -95,7 +84,7 @@ module Definition =
         Pattern.Config "PubKeyCredParamsObject" {
             Required = [
                 "alg", T<int>
-                "type", Enum.Type.Type
+                "type", Enum.CredentialType.Type
             ]
             Optional = []
         }
@@ -110,8 +99,8 @@ module Definition =
             ]
         }
 
-    let UserObject = 
-        Pattern.Config "UserObject" {
+    let UserInfo = 
+        Pattern.Config "UserInfo" {
             Required = [
                 "displayName", T<string>
                 "id", BinaryData
@@ -120,8 +109,8 @@ module Definition =
             Optional = []
         }
 
-    let UserObjectBase64 = 
-        Pattern.Config "UserObjectBase64" {
+    let UserInfoBase64 = 
+        Pattern.Config "UserInfoBase64" {
             Required = [
                 "displayName", T<string>
                 "id", T<string>
@@ -141,11 +130,13 @@ module Definition =
             ]
         }
 
-    let PublicKeyCredentialCreationOptionsCommon =
-        Pattern.Config "PublicKeyCredentialCreationOptionsCommon" {
+    let PublicKeyCredentialCreationOptions =
+        Pattern.Config "PublicKeyCredentialCreationOptions" {
             Required = [
                 "pubKeyCredParams", !| PubKeyCredParamsObject
                 "rp", RpObject.Type
+                "challenge", BinaryData
+                "user", UserInfo.Type
             ]
             Optional = [
                 "attestation", Enum.Attestation.Type
@@ -154,86 +145,31 @@ module Definition =
                 "extensions", T<obj>
                 "timeout", T<int>
                 "hint", !| Enum.Hints
-            ]
-        }
-
-    let PublicKeyCredentialCreationOptions =
-        Pattern.Config "PublicKeyCredentialCreationOptions" {
-            Required = [
-                "challenge", BinaryData
-                "user", UserObject.Type
-            ]
-            Optional = [
                 "excludeCredentials", !| ExcludeCredentialsObject
             ]
         }
-        |=> Inherits PublicKeyCredentialCreationOptionsCommon
-
-    let PublicKeyCredentialCreationOptionsBase64 =
-        Pattern.Config "PublicKeyCredentialCreationOptionsBase64" {
-            Required = [
-                "challenge", T<string>
-                "user", UserObjectBase64.Type
-            ]
-            Optional = [
-                "excludeCredentials", !| ExcludeCredentialsObjectBase64
-            ]
-        }
-        |=> Inherits PublicKeyCredentialCreationOptionsCommon
 
     let AllowCredentialsObject = 
         Pattern.Config "AllowCredentialsObject" {
             Required = [
                 "id", BinaryData
-                "transports", !| Enum.Transports
-                "type", Enum.Type.Type
+                "type", Enum.CredentialType.Type
             ]
-            Optional = []
+            Optional = ["transports", !| Enum.Transports]
         }
 
-    let AllowCredentialsObjectBase64 = 
-        Pattern.Config "AllowCredentialsObjectBase64" {
-            Required = [
-                "id", T<string>
-                "transports", !| Enum.Transports
-                "type", Enum.Type.Type
-            ]
-            Optional = []
-        }
-
-    let PublicKeyCredentialRequestOptionsCommon = 
-        Pattern.Config "PublicKeyCredentialRequestOptionsCommon" {
-            Required = []
+    let PublicKeyCredentialRequestOptions = 
+        Pattern.Config "PublicKeyCredentialRequestOptions" {
+            Required = ["challenge", BinaryData]
             Optional = [
                 "extensions", T<obj>
                 "hints", !| Enum.Hints
                 "rpId", T<string>
                 "timeout", T<int>
                 "userVerification", Enum.UserVerification.Type
+                "allowCredentials", !|AllowCredentialsObject.Type
             ]
         }
-
-    let PublicKeyCredentialRequestOptions = 
-        Pattern.Config "PublicKeyCredentialRequestOptions" {
-            Required = [
-                "challenge", BinaryData
-            ]
-            Optional = [
-                "allowCredentials", AllowCredentialsObject.Type
-            ]
-        }
-        |=> Inherits PublicKeyCredentialRequestOptionsCommon
-
-    let PublicKeyCredentialRequestOptionsBase64 = 
-        Pattern.Config "PublicKeyCredentialRequestOptionsBase64" {
-            Required = [
-                "challenge", T<string>
-            ]
-            Optional = [
-                "allowCredentials", AllowCredentialsObjectBase64.Type
-            ]
-        }
-        |=> Inherits PublicKeyCredentialRequestOptionsCommon
 
     let AuthenticatorResponse = 
         Pattern.Config "AuthenticatorResponse" {
@@ -291,12 +227,12 @@ module Definition =
 
     let PublicKeyCredential = 
         Class "PublicKeyCredential"
-        |=> Inherits T<Credential>
+        //|=> Inherits T<Credential>
         |+> Static [
             "isConditionalMediationAvailable" => T<unit> ^-> T<Promise<bool>>
             "isUserVerifyingPlatformAuthenticatorAvailable" => T<unit> ^-> T<Promise<bool>>
-            "parseCreationOptionsFromJSON" => PublicKeyCredentialCreationOptionsBase64?options ^-> PublicKeyCredentialCreationOptions
-            "parseRequestOptionsFromJSON" => PublicKeyCredentialRequestOptionsBase64?options ^-> PublicKeyCredentialRequestOptions
+            "parseCreationOptionsFromJSON" => PublicKeyCredentialCreationOptions?options ^-> PublicKeyCredentialCreationOptions
+            "parseRequestOptionsFromJSON" => PublicKeyCredentialRequestOptions?options ^-> PublicKeyCredentialRequestOptions
         ]
         |+> Instance [
             "authenticatorAttachment" =? T<string>
@@ -313,7 +249,7 @@ module Definition =
             Namespace "WebSharper.WebAuthentication" [
                 Enum.Format
                 Enum.Hints
-                Enum.Type
+                Enum.CredentialType
                 Enum.Transports
                 Enum.UserVerification
                 Enum.ResidentKey
@@ -323,20 +259,14 @@ module Definition =
                 AttestationObject
                 AuthenticatorAssertionResponse
                 AuthenticatorResponse
-                PublicKeyCredentialRequestOptionsBase64
                 PublicKeyCredentialRequestOptions
-                PublicKeyCredentialRequestOptionsCommon
-                AllowCredentialsObjectBase64
                 AllowCredentialsObject
-                PublicKeyCredentialCreationOptionsBase64
                 PublicKeyCredentialCreationOptions
-                PublicKeyCredentialCreationOptionsCommon
                 AuthenticatorSelectionObject
-                UserObjectBase64
-                UserObject
+                UserInfoBase64
+                UserInfo
                 RpObject
                 PubKeyCredParamsObject
-                ExcludeCredentialsObjectBase64
                 ExcludeCredentialsObject
                 PublicKeyCredentialJSON
                 AuthenticatorAttestationResponse

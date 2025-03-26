@@ -1,7 +1,9 @@
+﻿
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+	  
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,14 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="WebSharper" Version="6.1.7.476" />    
-    <PackageReference Include="WebSharper.FSharp" Version="6.1.7.476" />
+    <PackageReference Include="WebSharper" Version="8.0.0.540" />    
+    <PackageReference Include="WebSharper.FSharp" Version="8.0.0.540" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="WebSharper.CredentialManagement">
-      <HintPath>..\..\WebSharper.CredentialManagement\WebSharper.CredentialManagement\bin\Debug\netstandard2.0\WebSharper.CredentialManagement.dll</HintPath>
-    </Reference>
+    <PackageReference Update="FSharp.Core" Version="9.0.300-beta.25124.4" />
   </ItemGroup>
 
 </Project>
