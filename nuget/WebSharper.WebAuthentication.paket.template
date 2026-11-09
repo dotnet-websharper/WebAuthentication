@@ -15,8 +15,10 @@ tags
     Web JavaScript F# C# WebAuthn
 files
     ../WebSharper.WebAuthentication.Extensions/bin/Release/netstandard2.0/WebSharper.WebAuthentication.Extensions.dll ==> lib/netstandard2.0
+    ../WebSharper.WebAuthentication.Extensions/bin/Release/netstandard2.0/WebSharper.WebAuthentication.Extensions.websharper ==> lib/netstandard2.0
     ../WebSharper.WebAuthentication.Extensions/bin/Release/netstandard2.0/WebSharper.WebAuthentication.Extensions.xml ==> lib/netstandard2.0
     ../WebSharper.WebAuthentication/bin/Release/netstandard2.0/WebSharper.WebAuthentication.dll ==> lib/netstandard2.0
+    ../WebSharper.WebAuthentication/bin/Release/netstandard2.0/WebSharper.WebAuthentication.websharper ==> lib/netstandard2.0
     ../WebSharper.WebAuthentication/bin/Release/netstandard2.0/WebSharper.WebAuthentication.xml ==> lib/netstandard2.0
 dependencies
         WebSharper ~> LOCKEDVERSION:[3]
