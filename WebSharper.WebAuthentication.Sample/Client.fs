@@ -169,11 +169,10 @@ module Client =
         }
         |> Async.StartImmediate
 
-        IndexTemplate.Main()
+        IndexTemplate()
             .register(fun _ -> register () |> ignore)
             .login(fun _ -> login () |> ignore)
             .status(status.V)
             .credentialId(credentialId.V)
             .capabilities(capabilities.V)
-            .Doc()
-        |> Doc.RunById "main"
+            .Bind()
