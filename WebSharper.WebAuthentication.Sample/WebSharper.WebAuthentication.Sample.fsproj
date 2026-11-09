@@ -1,7 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- System.Text.Json / System.Reflection.Emit.Lightweight are framework
+         packages on net10.0; Paket still surfaces them as references. -->
+    <NoWarn>$(NoWarn);NU1510</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,19 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="WebSharper" Version="8.0.0.540" />   
-    <PackageReference Include="WebSharper.FSharp" Version="8.0.0.540" />
-    <PackageReference Include="WebSharper.MathJS" Version="8.0.0.540" />
-    <PackageReference Include="WebSharper.UI" Version="8.0.0.540" />
-    <PackageReference Include="WebSharper.AspNetCore" Version="8.0.0.540" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\WebSharper.WebAuthentication.Extensions\WebSharper.WebAuthentication.Extensions.fsproj" />
     <ProjectReference Include="..\WebSharper.WebAuthentication\WebSharper.WebAuthentication.fsproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="FSharp.Core" Version="9.0.300-beta.25124.4" />
-  </ItemGroup>
+  <Import Project="..\.paket\Paket.Restore.targets" />
 
 </Project>

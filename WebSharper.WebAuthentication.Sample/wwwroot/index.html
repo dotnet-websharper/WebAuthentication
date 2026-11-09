@@ -1,10 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>WebSharper.WebAuthentication.Sample</title>
+    <title>WebSharper WebAuthn Demo</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230d9488'/%3E%3Ccircle cx='8' cy='6' r='2.6' fill='white'/%3E%3Crect x='7' y='7.5' width='2' height='5.5' rx='1' fill='white'/%3E%3C/svg%3E" />
     <link rel="stylesheet" type="text/css" href="Content/WebSharper.WebAuthentication.Sample.css" />
+    <link rel="stylesheet" type="text/css" href="site.css" />
     <style>
         /* Don't show the not-yet-loaded templates */
         [ws-template], [ws-children-template] { display: none; }
@@ -12,12 +14,50 @@
     <script type="module" src="Content/WebSharper.WebAuthentication.Sample.head.js"></script>
 </head>
 <body>
-    <div id="main" ws-children-template="Main">
-        <h1>🔐 WebAuthn Demo</h1>
+    <main class="page">
+        <header class="hero">
+            <h1>WebAuthn Demo</h1>
+            <p class="lede">
+                Register and authenticate a public-key credential with the
+                <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API" target="_blank" rel="noreferrer">Web Authentication API</a>.
+                The page must run in a secure context (HTTPS or localhost) with a platform
+                authenticator, a security key, or a virtual authenticator.
+            </p>
+        </header>
 
-        <button id="registerBtn" ws-onclick="RegisterBtn">Register</button>
-        <button id="loginBtn" ws-onclick="LoginBtn">Login</button>
-    </div>
+        <div id="main" ws-children-template="Main">
+            <section class="card">
+                <h2>1. Register</h2>
+                <p class="hint">
+                    Creates a new credential with <code>navigator.credentials.create()</code>
+                    using the <code>ES256</code> (<code>-7</code>) algorithm.
+                </p>
+                <div class="actions">
+                    <button class="btn btn-primary" ws-onclick="register">Register</button>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>2. Authenticate</h2>
+                <p class="hint">
+                    Requests an assertion with <code>navigator.credentials.get()</code>
+                    for the credential created above.
+                </p>
+                <div class="actions">
+                    <button class="btn" ws-onclick="login">Login</button>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Credential</h2>
+                <p class="hint">Raw credential id (hex).</p>
+                <pre class="preview">${credentialId}</pre>
+            </section>
+
+            <p class="status" role="status">${status}</p>
+            <p class="capabilities">${capabilities}</p>
+        </div>
+    </main>
     <script type="module" src="Content/WebSharper.WebAuthentication.Sample.min.js"></script>
 </body>
 </html>
