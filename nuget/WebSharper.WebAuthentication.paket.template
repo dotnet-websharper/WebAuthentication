@@ -1,0 +1,22 @@
+type file
+id WebSharper.WebAuthentication
+authors
+    IntelliFactory
+owners
+    IntelliFactory
+repositoryType git
+repositoryUrl https://github.com/dotnet-websharper/WebAuthentication/
+licenseUrl https://github.com/dotnet-websharper/WebAuthentication/blob/master/LICENSE.md
+iconUrl https://github.com/dotnet-websharper/core/raw/websharper50/tools/WebSharper.png
+projectUrl https://github.com/dotnet-websharper/WebAuthentication
+description
+    WebSharper bindings for the Web Authentication API (WebAuthn)
+tags
+    Web JavaScript F# C# WebAuthn
+files
+    ../WebSharper.WebAuthentication.Extensions/bin/Release/netstandard2.0/WebSharper.WebAuthentication.Extensions.dll ==> lib/netstandard2.0
+    ../WebSharper.WebAuthentication.Extensions/bin/Release/netstandard2.0/WebSharper.WebAuthentication.Extensions.xml ==> lib/netstandard2.0
+    ../WebSharper.WebAuthentication/bin/Release/netstandard2.0/WebSharper.WebAuthentication.dll ==> lib/netstandard2.0
+    ../WebSharper.WebAuthentication/bin/Release/netstandard2.0/WebSharper.WebAuthentication.xml ==> lib/netstandard2.0
+dependencies
+        WebSharper ~> LOCKEDVERSION:[3]

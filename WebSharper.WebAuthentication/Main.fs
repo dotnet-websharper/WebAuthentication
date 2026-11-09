@@ -45,6 +45,7 @@ module Definition =
                 "internal"
                 "nfc"
                 "usb"
+                "smart-card"
             ]
 
         let CredentialType = 
@@ -75,9 +76,7 @@ module Definition =
                 "id", BinaryData
                 "type", Enum.CredentialType.Type
             ]
-            Optional = [
-                "transports", !| Enum.Transports
-            ]
+            Optional = [("transports", !| Enum.Transports)]
         }
 
     let PubKeyCredParamsObject = 
@@ -91,12 +90,8 @@ module Definition =
 
     let RpObject = 
         Pattern.Config "RpObject" {
-            Required = [
-                "name", T<string>
-            ]
-            Optional = [
-                "id", T<string>
-            ]
+            Required = [("name", T<string>)]
+            Optional = [("id", T<string>)]
         }
 
     let UserInfo = 
@@ -144,7 +139,7 @@ module Definition =
                 "authenticatorSelection", AuthenticatorSelectionObject.Type                     
                 "extensions", T<obj>
                 "timeout", T<int>
-                "hint", !| Enum.Hints
+                "hints", !| Enum.Hints
                 "excludeCredentials", !| ExcludeCredentialsObject
             ]
         }
@@ -155,12 +150,12 @@ module Definition =
                 "id", BinaryData
                 "type", Enum.CredentialType.Type
             ]
-            Optional = ["transports", !| Enum.Transports]
+            Optional = [("transports", !| Enum.Transports)]
         }
 
     let PublicKeyCredentialRequestOptions = 
         Pattern.Config "PublicKeyCredentialRequestOptions" {
-            Required = ["challenge", BinaryData]
+            Required = [("challenge", BinaryData)]
             Optional = [
                 "extensions", T<obj>
                 "hints", !| Enum.Hints
@@ -172,12 +167,10 @@ module Definition =
         }
 
     let AuthenticatorResponse = 
-        Pattern.Config "AuthenticatorResponse" {
-            Required = []
-            Optional = [
-                "clientDataJSON", BinaryData
-            ]
-        }
+        Class "AuthenticatorResponse"
+        |+> Instance [
+            "clientDataJSON" =? T<ArrayBuffer>
+        ]
 
     let AuthenticatorAssertionResponse = 
         Class "AuthenticatorAssertionResponse"
@@ -219,10 +212,7 @@ module Definition =
                 "clientExtensionResults", !| T<string>
                 "response", T<obj>
             ]
-            Optional = [
-                "authenticatorAttachment", T<string>
-                
-            ]
+            Optional = [("authenticatorAttachment", T<string>)]
         }
 
     let PublicKeyCredential = 
@@ -235,13 +225,39 @@ module Definition =
             "parseRequestOptionsFromJSON" => PublicKeyCredentialRequestOptions?options ^-> PublicKeyCredentialRequestOptions
         ]
         |+> Instance [
-            "authenticatorAttachment" =? T<string>
+            "authenticatorAttachment" =? Enum.AuthenticatorAttachment.Type
             "id" =? T<string>
             "rawId" =? BinaryData
             "response" =? AuthenticatorAttestationResponse + AuthenticatorAssertionResponse
+            "type" =? T<string>
 
             "getClientExtensionResults" => T<unit> ^-> T<obj>
             "toJSON" => T<unit> ^-> PublicKeyCredentialJSON
+        ]
+
+    let CredentialCreationOptions =
+        Pattern.Config "CredentialCreationOptions" {
+            Required = [("publicKey", PublicKeyCredentialCreationOptions.Type)]
+            Optional = [("signal", T<Dom.AbortSignal>)]
+        }
+
+    let CredentialRequestOptions =
+        Pattern.Config "CredentialRequestOptions" {
+            Required = []
+            Optional = [
+                "publicKey", PublicKeyCredentialRequestOptions.Type
+                "mediation", T<string>
+                "signal", T<Dom.AbortSignal>
+            ]
+        }
+
+    let CredentialsContainer =
+        Class "CredentialsContainer"
+        |+> Instance [
+            "create" => !?CredentialCreationOptions?options ^-> T<Promise<_>>[PublicKeyCredential]
+            "get" => !?CredentialRequestOptions?options ^-> T<Promise<_>>[PublicKeyCredential]
+            "getClientCapabilities" => T<unit> ^-> T<Promise<obj>>
+            "preventSilentAccess" => T<unit> ^-> T<Promise<unit>>
         ]
 
     let Assembly =
@@ -271,6 +287,10 @@ module Definition =
                 PublicKeyCredentialJSON
                 AuthenticatorAttestationResponse
                 PublicKeyCredential
+
+                CredentialsContainer
+                CredentialCreationOptions
+                CredentialRequestOptions
             ]
         ]
 
